@@ -83,7 +83,7 @@ VITE_API_URL=http://localhost:3000
 >
 > 💡 **Tip:** Because the value is baked in at build time, changing it requires a rebuild (`npm run build`), not just a dev-server restart.
 
-### <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Key.png" alt="Key" width="25" height="25" /> Scripts
+### <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Key.png" alt="Key" width="25" height="25" /> alt="Key" width="25" height="25" /> Scripts
 
 | Script              | Description                                        |
 | ------------------- | -------------------------------------------------- |
