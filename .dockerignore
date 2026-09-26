@@ -9,7 +9,6 @@ dist-ssr
 !.env.example
 Dockerfile
 .dockerignore
-nginx.conf
 README.md
 LICENSE
 *.log
