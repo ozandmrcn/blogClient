@@ -142,7 +142,7 @@ docker run -d -p 80:80 blog-client
 - `localStorage.isLoggedIn` is a UI hint only. The real session lives in an `httpOnly` cookie, so every page load re-confirms it against the API.
 - Comment and post counts come from the API. Nothing in the UI invents engagement numbers.
 
-## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Envelope%20Letters.png" alt="Envelope" width="25" height="25" /> Contact
+## <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/E-Mail.png" alt="E-Mail" width="25" height="25" /> Contact
 
 For any questions or feedback, feel free to contact:  
 **Ozan Demircan** – [ozandmrcn47@gmail.com](mailto:ozandmrcn47@gmail.com)
