@@ -109,7 +109,7 @@ blogClient
 │   ├── App.tsx             # Route table
 │   └── main.tsx            # Providers and app entry point
 ├── .env.example
-├── vercel.json             # Vercel build config and SPA rewrite
+├── vercel.json             # Vercel build config, /api proxy and SPA rewrite
 ├── Dockerfile              # Vite build -> nginx runtime
 └── nginx.conf              # Static serving, caching and SPA fallback
 ```
@@ -120,11 +120,11 @@ The app is configured for **Vercel**. Import the repository and set one environm
 
 | Variable       | Value                                |
 | -------------- | ------------------------------------ |
-| `VITE_API_URL` | `https://blog-api.onrender.com`      |
+| `VITE_API_URL` | `/api`                               |
 
-[`vercel.json`](./vercel.json) already sets the build command, the output directory and the SPA rewrite, so client-side routes such as `/blog/<id>` resolve on a hard refresh.
+[`vercel.json`](./vercel.json) already sets the build command, the output directory, the SPA rewrite and an `/api/*` proxy to the API, so client-side routes such as `/blog/<id>` resolve on a hard refresh and API calls leave from a single origin.
 
-> 💡 **Cross-site cookies:** a `*.vercel.app` frontend and a `*.onrender.com` API are different sites, so the API must run with `COOKIE_SAME_SITE=none` and `COOKIE_SECURE=true`. See the [API README](https://github.com/ozandmrcn/blogApi#readme).
+> 💡 **Why the API is proxied instead of called directly:** a `*.vercel.app` frontend and a `*.onrender.com` API are different *sites*, so every request is third-party. Chrome drops third-party cookies in Incognito and under most privacy settings, which silently breaks the `httpOnly` auth cookies — login appears to succeed and the next protected request is a 401. Proxying `/api/*` through Vercel keeps the cookies first-party on the `*.vercel.app` host, so the session survives in every browser without owning a domain.
 
 For a container deployment, the included multi-stage `Dockerfile` builds the bundle and serves it from nginx:
 

@@ -2,8 +2,21 @@ import type { InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
 import { isLoggedIn, setLoggedIn } from "../utils/session";
 
-/** Base URL of the API, without the `/api` prefix. */
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+/**
+ * Origin the API is reached through, without the `/api` prefix — the service
+ * modules already carry that prefix.
+ *
+ * In production the client and the API share an origin, because Vercel proxies
+ * `/api/*` to Render. An empty value therefore keeps every request first-party,
+ * which is what lets the httpOnly auth cookies survive: a cross-site request
+ * would be third-party and Chrome drops those cookies. Local development points
+ * straight at the API through `.env`.
+ */
+const configuredBaseUrl = import.meta.env.VITE_API_URL ?? "";
+
+const baseURL = configuredBaseUrl
+  .replace(/\/+$/, "")
+  .replace(/\/api$/, "");
 
 /** A request that has already been replayed once after a token refresh. */
 type RetriableRequest = InternalAxiosRequestConfig & { retried?: boolean };
