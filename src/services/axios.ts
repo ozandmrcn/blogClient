@@ -1,5 +1,6 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
+import { isLoggedIn, setLoggedIn } from "../utils/session";
 
 /** Base URL of the API, without the `/api` prefix. */
 const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -37,9 +38,13 @@ api.interceptors.response.use(
 
     // A 401 on a recoverable endpoint means the access token has expired:
     // mint a new one with the refresh token, then replay the original request.
+    // `isLoggedIn` guards this because an anonymous visitor has no refresh
+    // token to spend — without it, every stale flag would fire a 401 → refresh
+    // → logout chain that cannot succeed.
     const isExpiredAccessToken =
       error.response?.status === 401 &&
       Boolean(originalRequest) &&
+      isLoggedIn() &&
       !originalRequest?.retried &&
       !NO_REFRESH_PATHS.some((noRefreshPath) => path.includes(noRefreshPath));
 
@@ -56,7 +61,17 @@ api.interceptors.response.use(
         return api.request(originalRequest);
       } catch {
         // The refresh token is expired or revoked, so the session is over.
-        await authService.logout();
+        // Clearing the flag first stops the next page load from retrying it,
+        // and the logout failure must not prevent the redirect below.
+        setLoggedIn(false);
+
+        try {
+          await authService.logout();
+        } catch {
+          // The session is already unusable, so there is nothing to clear
+          // server-side.
+        }
+
         window.location.assign("/login");
 
         return Promise.reject(error);

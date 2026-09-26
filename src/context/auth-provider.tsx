@@ -4,14 +4,8 @@ import { toast } from "react-toastify";
 import type { LoginValues, RegisterValues, User } from "../types";
 import authService from "../services/auth";
 import { getApiErrorMessage, readApiError } from "../utils/api-error";
+import { isLoggedIn, setLoggedIn } from "../utils/session";
 import { AuthContext } from "./auth-context";
-
-/**
- * Mirrors the session for the UI only. The auth cookie is httpOnly, so this
- * flag is never trusted on its own — it just avoids a profile request on
- * anonymous visits.
- */
-const LOGGED_IN_KEY = "isLoggedIn";
 
 const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
@@ -21,7 +15,7 @@ const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   // The session is confirmed with the API on every page load, because the
   // cookie that carries it cannot be read from JavaScript.
   useEffect(() => {
-    if (localStorage.getItem(LOGGED_IN_KEY) !== "true") {
+    if (!isLoggedIn()) {
       setUser(null);
 
       return;
@@ -34,7 +28,7 @@ const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setUser(await authService.getProfile());
       } catch {
         setUser(null);
-        localStorage.setItem(LOGGED_IN_KEY, "false");
+        setLoggedIn(false);
       } finally {
         setLoading(false);
       }
@@ -66,7 +60,8 @@ const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     try {
       const user = await authService.login(values);
       setUser(user);
-      localStorage.setItem(LOGGED_IN_KEY, "true");
+      setLoggedIn(true);
+
       toast.success("Signed in successfully.");
 
       return null;
@@ -90,7 +85,7 @@ const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       toast.error(getApiErrorMessage(error, "Sign out did not complete."));
     } finally {
       setUser(null);
-      localStorage.setItem(LOGGED_IN_KEY, "false");
+      setLoggedIn(false);
       navigate("/login");
       toast.success("Signed out.");
     }
