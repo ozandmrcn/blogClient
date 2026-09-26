@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Loaded here rather than with a CSS @import: the stylesheet is discovered
+         only after the CSS downloads, which serialises two extra requests. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;family=Kumbh+Sans:wght@100..900&amp;display=swap"
+    />
+    <meta
+      name="description"
+      content="Inkwell is a full-stack blogging platform for publishing, tagging and discussing posts."
+    />
+    <meta property="og:title" content="Inkwell" />
+    <meta
+      property="og:description"
+      content="Inkwell is a full-stack blogging platform for publishing, tagging and discussing posts."
+    />
+    <meta property="og:type" content="website" />
+    <title>Inkwell — Publish, tag and discuss</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
